@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+	<title>Gerenciamento de Alunos</title>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+</head>
+<body>
+	<% include ../menus/administrador %>
+    <div class="container">
+        <div class="col-sm-6 col-sm-offset-3">
+
+        	<% if(mensagem){ %>
+				<div class="alert alert-<%= mensagem.tipo %> alert-dismissible" role="alert">
+				  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				  	<span aria-hidden="true">&times;</span>
+				  </button>
+				  <i class="glyphicon glyphicon-exclamation-sign"></i> <%= mensagem.texto %>
+				</div>
+			<% } %>
+
+            <h1><span class="glyphicon glyphicon-cog"></span> Gerenciamento</h1>
+
+			<div class="panel panel-default">
+				<div class="panel-heading"><i class="glyphicon glyphicon-list-alt"></i> Listagem de alunos</div>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Nome</th>
+							<th>Curso</th>
+							<th>Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% for(var i=0; i<lista.length; i++){ %>
+						<tr>
+							<td><%= lista[i].id %></td>
+							<td><%= lista[i].nome %></td>
+							<td><%= lista[i].curso %></td>
+							<td>
+							<div class="btn-group btn-group-xs" role="group" aria-label="...">
+							  <a href="/alunos/editar?id=<%= lista[i].id %>" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i> Editar</a>
+							  <a href="/alunos/apagar?id=<%= lista[i].id %>" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i> Apagar</a>
+						  	</div>
+							</td>
+						</tr>
+						<% } %>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"  crossorigin="anonymous"></script>
+</body>
+</html>

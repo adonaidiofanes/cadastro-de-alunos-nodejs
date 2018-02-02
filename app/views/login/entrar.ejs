@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+	<title>Sistema de Cadastro de Alunos</title>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+</head>
+<body>
+    <% include ../menus/anonimo %>
+    <div class="container">
+        <div class="col-sm-6 col-sm-offset-3">
+            <h1><span class="glyphicon glyphicon-lock"></span> Acesso ao sistema</h1>
+
+            <!-- show any messages that come back with authentication -->
+            <% if (message.length > 0) { %>
+                <div class="alert alert-danger"><%= message %></div>
+            <% } %>
+
+            <!-- LOGIN FORM -->
+            <form action="/" method="post">
+                <div class="form-group">
+                    <label>Usuário</label>
+                    <input type="text" class="form-control" name="usuario">
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" class="form-control" name="senha">
+                </div>
+
+                <button type="submit" class="btn btn-success btn-lg">Entrar</button>
+            </form>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"  crossorigin="anonymous"></script>
+</body>
+</html>

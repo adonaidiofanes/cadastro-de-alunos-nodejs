@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+	<title>Cadastrar Aluno</title>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+	<% include ../menus/administrador %>
+	
+	<form action="<%= acao.url %>" method="POST">
+	
+	<div class="container">
+		<h1><span class="glyphicon glyphicon-cog"></span> Gerenciamento de alunos</h1>
+		<hr>
+	    <div class="row">
+	        <div class="col-md-6">
+
+					<div class="form-group">
+						<label for="titulo">Nome</label>
+						<input type="text" class="form-control" name="nome" placeholder="Nome" value="<%= aluno.dados.nome %>">
+					</div>
+
+					<div class="form-group">
+						<label for="email">Email</label>
+						<input type="text" id="email" class="form-control" name="email" placeholder="Email" value="<%= aluno.dados.email %>">
+					</div>
+					
+					<div><label for="telefones">Telefones</label></div>
+					
+					<% if(aluno.telefones){ 
+						for(var i=0; i<aluno.telefones.length; i++){
+					%>
+					<div class="form-group input-group">
+						<input id="telefones" type="text" name="telefones[]" value="<%= aluno.telefones[i].telefone %>" class="form-control">
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-danger btn-remove">-
+							</button>
+						</span>
+					</div>
+					<%	}
+					   } 
+					%>	
+
+					<div class="form-group input-group">
+						<input id="telefones" type="text" name="telefones[]" class="form-control">
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-default btn-add">+
+							</button>
+						</span>
+					</div>
+
+					<input type="hidden" name="id" value="<%= aluno.dados.id %>">
+
+					<button type="submit" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-floppy-saved"></i> <%= acao.botao %></button>
+
+			</div>
+
+
+			<!-- ***************************************************************** -->
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="titulo">Cursos de interesse</label>
+					<input type="text" class="form-control" id="buscarCurso" placeholder="Buscar curso">
+				</div>
+				<div class="panel panel-primary">
+	                <!-- https://bootsnipp.com/snippets/featured/material-design-switch -->
+	                <div class="panel-heading"><i class="glyphicon glyphicon-list-alt"></i> Selecione os cursos</div>
+	            
+	                <!-- List group -->
+	                <ul class="list-group" id="painelCursos">
+	                </ul>
+	            </div>  
+	        </div>
+			<!-- ***************************************************************** -->
+
+
+		</div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"  crossorigin="anonymous"></script>
+	<script src="/js/scripts.js"></script>
+
+	</form>
+
+</body>
+</html>
