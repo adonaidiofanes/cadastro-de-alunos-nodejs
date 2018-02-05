@@ -32,4 +32,4 @@ Os passos que segui foram:
 4. Trabalhando com paginação no node
 --------------
 
-* Útlima atualização: 02/02/2018 - 15:45
+* Útlima atualização: 05/02/2018 - 16:45
