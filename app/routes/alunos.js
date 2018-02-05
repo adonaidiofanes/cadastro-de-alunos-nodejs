@@ -70,7 +70,7 @@ module.exports = function(app){
 	});
 
 	// Vamos atender as requisicoes via GET
-	app.get('/lista/', function(requisicao, resposta){
+	app.get('/lista/', auth, function(requisicao, resposta){
 		// conectar ao mysql
 		var connection = app.infra.dbConnection();
 		var AlunosDAO = new app.infra.AlunosDAO(connection);
