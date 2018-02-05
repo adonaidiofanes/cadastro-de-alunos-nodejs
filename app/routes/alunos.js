@@ -2,6 +2,8 @@
 var request = require('request');
 var async = require('async');
 
+const limite = 5;
+
 module.exports = function(app){
 
 	var auth = function(req, res, next) {
@@ -68,20 +70,46 @@ module.exports = function(app){
 	});
 
 	// Vamos atender as requisicoes via GET
-	app.get('/lista', auth, function(requisicao, resposta){
-
+	app.get('/lista/', function(requisicao, resposta){
 		// conectar ao mysql
 		var connection = app.infra.dbConnection();
 		var AlunosDAO = new app.infra.AlunosDAO(connection);
 
-		// realizar consulta no banco            // funcao de callback
-		AlunosDAO.lista(function(err, results){
-			resposta.render('alunos/listagem', {lista: results, mensagem: ""});
+		// controle de paginacao
+		var idPagina = 1;
+		var offset = 0;
+
+		if(requisicao.query.pagina && requisicao.query.pagina != 1){
+			idPagina = requisicao.query.pagina;
+			offset = (idPagina - 1) * limite;
+		}
+
+		async.parallel({
+		    totalAlunos: function(callback) {
+				AlunosDAO.contarAlunos(function(terr, tres){
+			        callback(null, tres[0].total);
+		        });
+		    },
+		    listaAlunos: function(callback) {
+				AlunosDAO.lista(offset, limite, function(errLista, resultLista){
+					// resposta.render('alunos/listagem', {lista: results, mensagem: ""});
+					callback(null, resultLista);
+				});
+		    }
+		}, function(err, results) {
+
+			var arr = [];
+			var numeroPaginas = Math.round(results.totalAlunos/limite);
+			
+			arr.push({lista: results.listaAlunos});
+			arr.push({totalAlunos: results.totalAlunos, totalPaginas: numeroPaginas});
+
+			resposta.render('alunos/listagem', {lista: arr, mensagem: ""});
+
 		});
 
-		// fechar a conexao
 		connection.end();
-		
+
 	});
 
 	// Rota para a pagina do formulario de cadastro
@@ -134,6 +162,21 @@ module.exports = function(app){
 				});
 
 		    },
+		    totalAlunos: function(callback) {
+				AlunosDAO.contarAlunos(function(terr, tres){
+			        callback(null, tres[0].total);
+		        });
+		    },
+		    listaAlunos: function(callback) {
+				AlunosDAO.lista(0, limite, function(errLista, resultLista){
+					callback(null, resultLista);
+				});
+		    },
+		    lista: function(callback){
+		    	AlunosDAO.lista(0, 5, function(lErr, lRes){
+		    		callback(null, lRes);
+		    	});
+		    }
 
 		},
 		function(err, result) {
@@ -145,10 +188,15 @@ module.exports = function(app){
 			if(err){
 				mensagem = {tipo: "danger", texto: "Ocorreu um erro ao realizar o cadastro!"};
 			}
+
+			var arr = [];
+			var numeroPaginas = Math.round(result.totalAlunos/limite);
 			
-			AlunosDAO.lista(function(err, results){
-				resposta.render('alunos/listagem', {lista: results, mensagem: mensagem});
-			});
+			arr.push({lista: result.listaAlunos});
+			arr.push({totalAlunos: result.totalAlunos, totalPaginas: numeroPaginas});
+
+			resposta.render('alunos/listagem', {lista: arr, mensagem: mensagem});
+
 			connection.end();
 		});
 
@@ -236,12 +284,37 @@ module.exports = function(app){
 			if(erros){
 				mensagem = {tipo: "danger", texto: "Ocorreu um erro ao atualizar o cadastro!"};
 			}
-			
-			AlunosDAO.lista(function(err, results){
-				resposta.render('alunos/listagem', {lista: results, mensagem: mensagem});
-			});
 
-			connection.end();
+			async.series({
+			    totalAlunos: function(callback) {
+					AlunosDAO.contarAlunos(function(terr, tres){
+				        callback(null, tres[0].total);
+			        });
+			    },
+			    listaAlunos: function(callback) {
+					AlunosDAO.lista(0, limite, function(errLista, resultLista){
+						callback(null, resultLista);
+					});
+			    },
+			    lista: function(callback){
+			    	AlunosDAO.lista(0, 5, function(lErr, lRes){
+			    		callback(null, lRes);
+			    	});
+			    }
+
+			},
+			function(err, result) {
+
+				var arr = [];
+				var numeroPaginas = Math.round(result.totalAlunos/limite);
+				
+				arr.push({lista: result.listaAlunos});
+				arr.push({totalAlunos: result.totalAlunos, totalPaginas: numeroPaginas});
+
+				resposta.render('alunos/listagem', {lista: arr, mensagem: mensagem});
+
+				connection.end();
+			});
 		});
 	});
 
@@ -258,14 +331,38 @@ module.exports = function(app){
 			if(erros){
 				mensagem = {tipo: "danger", texto: "Ocorreu um erro ao apagar o cadastro!"};
 			}
-			
-			AlunosDAO.lista(function(err, results){
-				resposta.render('alunos/listagem', {lista: results, mensagem: mensagem});
-				connection.end();
-			});
 
-		});
-		
+			async.series({
+			    totalAlunos: function(callback) {
+					AlunosDAO.contarAlunos(function(terr, tres){
+				        callback(null, tres[0].total);
+			        });
+			    },
+			    listaAlunos: function(callback) {
+					AlunosDAO.lista(0, limite, function(errLista, resultLista){
+						callback(null, resultLista);
+					});
+			    },
+			    lista: function(callback){
+			    	AlunosDAO.lista(0, 5, function(lErr, lRes){
+			    		callback(null, lRes);
+			    	});
+			    }
+
+			},
+			function(err, result) {
+
+				var arr = [];
+				var numeroPaginas = Math.round(result.totalAlunos/limite);
+				
+				arr.push({lista: result.listaAlunos});
+				arr.push({totalAlunos: result.totalAlunos, totalPaginas: numeroPaginas});
+
+				resposta.render('alunos/listagem', {lista: arr, mensagem: mensagem});
+
+				connection.end();
+			});			
+		});		
 	});
 
 }

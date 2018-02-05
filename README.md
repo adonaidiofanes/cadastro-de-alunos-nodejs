@@ -29,6 +29,7 @@ Os passos que segui foram:
 1. Trabalhando com sessões no NodeJS
 2. Restringindo acesso anônimo / logado
 3. Trabalhando com includes em views
+4. Trabalhando com paginação no node
 --------------
 
 * Útlima atualização: 02/02/2018 - 15:45

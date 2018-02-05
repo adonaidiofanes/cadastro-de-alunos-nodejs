@@ -2,8 +2,12 @@ function AlunosDAO(connection){
 	this._connection = connection;
 }
 
-AlunosDAO.prototype.lista = function(callback){
-	this._connection.query('SELECT * FROM alunos', callback);
+AlunosDAO.prototype.lista = function(offset, limite, callback){
+	this._connection.query('SELECT * FROM alunos ORDER BY id ASC LIMIT ' + limite + ' OFFSET ' + offset, callback);
+}
+
+AlunosDAO.prototype.contarAlunos = function(callback){
+	this._connection.query('SELECT count(*) AS total FROM alunos', callback);
 }
 
 AlunosDAO.prototype.salva = function(aluno, callback){
